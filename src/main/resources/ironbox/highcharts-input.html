@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Highcharts</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+</head>
+<body>
+    <h1>Highcharts</h1>
+    <div id="chart"></div>
+    <script>
+        Highcharts.chart('chart', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'User Consumption'
+            },
+            xAxis: {
+                categories: ['LTT RSRP', 'LTT RSRQ', 'RSRR']
+            },
+            yAxis: {
+                title: {
+                    text: 'Data used (in kBPS)'
+                }
+            },
+            series: [{
+                name: 'User 1 ',
+                data: [11, 10, 14]
+            }, {
+                name: 'User 2',
+                data: [5, 17, 6]
+            }, {
+                name: 'User 3',
+                data: [15, 5, 9]
+            }]
+        });
+    </script>
+</body>
+</html>

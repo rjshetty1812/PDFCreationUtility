@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="test" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1f7a53a6-ec83-4b9d-baf7-a3bf2e4842af">
+    <property name="ireport.zoom" value="1.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <queryString>
+        <![CDATA[select
+ round(extract(second from (max(stoptime)-min(starttime)))/60+
+ extract(minute from (max(stoptime)-min(starttime)))+
+ extract(hour from (max(stoptime)-min(starttime)))*60+
+ extract(day from (max(stoptime)-min(starttime)))*60*24,1)
+  DURATION,
+ nuitbatch DAY_STRING,
+ to_date(nuitbatch, 'yyyy-mm-dd') DAY_DATE,
+ trunc(sysdate)-to_date(nuitbatch, 'yyyy-mm-dd') as DAY_BEFORE,
+ application
+from (
+ select
+  to_char(starttime-0.5, 'yyyy-mm-dd') AS nuitbatch,
+  application,
+  job,
+  resultat,
+  starttime,
+  stoptime
+ from my_table
+ where resultat=0 and stoptime> sysdate-14)
+group by application, nuitbatch]]>
+    </queryString>
+    <field name="DURATION" class="java.math.BigDecimal"/>
+    <field name="DAY_STRING" class="java.lang.String"/>
+    <field name="DAY_DATE" class="java.sql.Timestamp"/>
+    <field name="DAY_BEFORE" class="java.math.BigDecimal"/>
+    <field name="APPLICATION" class="java.lang.String"/>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="21" splitType="Stretch"/>
+    </title>
+    <detail>
+        <band height="287">
+            <timeSeriesChart>
+                <chart>
+                    <reportElement uuid="101731c3-d247-4bdf-87ff-2b1a5eae9eb0" x="0" y="0" width="555" height="287"/>
+                    <chartTitle/>
+                    <chartSubtitle/>
+                    <chartLegend/>
+                </chart>
+                <timeSeriesDataset>
+                    <dataset incrementType="Report"/>
+                    <timeSeries>
+                        <seriesExpression><![CDATA[$F{APPLICATION}.toString()]]></seriesExpression>
+                        <timePeriodExpression><![CDATA[$F{DAY_DATE}]]></timePeriodExpression>
+                        <valueExpression><![CDATA[$F{DURATION}]]></valueExpression>
+                        <labelExpression><![CDATA[$F{APPLICATION}.toString()]]></labelExpression>
+                    </timeSeries>
+                </timeSeriesDataset>
+                <timeSeriesPlot>
+                    <plot/>
+                </timeSeriesPlot>
+            </timeSeriesChart>
+        </band>
+    </detail>
+</jasperReport>
